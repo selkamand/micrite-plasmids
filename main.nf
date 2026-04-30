@@ -13,6 +13,8 @@ include { PLASMID_SPADES } from './modules/local/plasmidspades.nf'
 workflow {
 
     main:
+
+    // Parse Sample Sheet
     ch_samples = channel.fromPath(params.input)
         .splitCsv(header: true)
         .map { row ->
@@ -39,6 +41,7 @@ workflow {
             tuple([id: sample], r1, r2)
         }
 
+    // Plasmid Spades
     ch_plasmidspades = PLASMID_SPADES(ch_samples)
 
     publish:
