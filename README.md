@@ -4,7 +4,7 @@
 Search a fastq for plasmids. 
 
 1) Runs plasmidSpades.py
-
+2) If custom set of known plasmid sequences are provided (fasta file) 
 
 ## Quick Start 
 
@@ -18,7 +18,13 @@ Save to 'samplesheet.csv' and run:
 
 
 ```
-nextflow run selkamand/micrite-plasmid -profile docker
+nextflow run selkamand/micrite-plasmid -profile docker --input samplesheet.csv
+```
+
+If you have a set of known plasmid sequences from your species/genera of interest, you can supply with the -plasmids option
+
+```
+nextflow run selkamand/micrite-plasmid -profile docker --plasmids plasmids.fa -input samplesheet.csv
 ```
 
 > [!NOTE]
@@ -30,6 +36,5 @@ nextflow run selkamand/micrite-plasmid -profile docker
 Before you begin, check the test profile runs well on your machine:
 
 ```
-
 nextflow run selkamand/micrite-plasmid -profile docker,test
 ```
