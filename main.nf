@@ -9,6 +9,9 @@ params {
     // Path to bakta database directory
     bakta_database: Path? = null
 
+    // Path to mobsuite database directory
+    mobsuite_database: Path? = null
+
     // Path to viralverify HMM database
     viralverify_database: Path? = null
 
@@ -19,6 +22,7 @@ params {
 include { PLASMID_SPADES } from './modules/local/plasmidspades.nf'
 include { BAKTA } from './modules/local/bakta.nf'
 include { VIRALVERIFY } from './modules/local/viralverify.nf'
+include { MOBSUITE } from './modules/local/mob_suite.nf'
 
 workflow {
 
@@ -57,9 +61,14 @@ workflow {
 
     // Annotate Plasmid Assembly if user supplies bakta database
     ch_bakta = channel.empty()
-
     if (params.bakta_database != null) {
         ch_bakta = BAKTA(ch_plasmidspades.scaffolds, params.bakta_database)
+    }
+
+    // Run mobsuite on Plasmid assembly if user supplies mobsuite database
+    ch_mobsuite = channel.empty()
+    if (params.mobsuite_database != null) {
+        ch_mobsuite = MOBSUITE(ch_plasmidspades.scaffolds, params.mobsuite_database)
     }
 
     // Classify plasmid spades output with viralverify 
@@ -71,6 +80,7 @@ workflow {
     publish:
     plasmidspades = ch_plasmidspades.all_results
     annotations = ch_bakta
+    mobsuite = ch_mobsuite
     viralverify = ch_viralverify
 }
 
@@ -81,6 +91,10 @@ output {
     }
     annotations {
         path "${params.outdir}/bakta/"
+        mode 'copy'
+    }
+    mobsuite {
+        path "${params.outdir}/mobsuite/"
         mode 'copy'
     }
     viralverify {
