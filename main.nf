@@ -15,6 +15,9 @@ params {
     // Path to viralverify HMM database
     viralverify_database: Path? = null
 
+    // Path to blastn database of known plasmids 
+    blastn_database: Path? = null
+
     // Output directory name
     outdir: String = "micrite_plasmid"
 }
@@ -77,10 +80,17 @@ workflow {
         ch_viralverify = VIRALVERIFY(ch_plasmidspades.scaffolds, params.viralverify_database)
     }
 
+    // Blast plasmid spades output against a database of known plasmid sequences
+    ch_blastn = channel.empty()
+    if (params.blastn_database != null) {
+        ch_blastn = VIRALVERIFY(ch_plasmidspades.scaffolds, params.blastn_database)
+    }
+
     publish:
     plasmidspades = ch_plasmidspades.all_results
     annotations = ch_bakta
     mobsuite = ch_mobsuite
+    blastn = ch_blastn
     viralverify = ch_viralverify
 }
 
@@ -99,6 +109,10 @@ output {
     }
     viralverify {
         path "${params.outdir}/viralverify/"
+        mode 'copy'
+    }
+    blastn {
+        path "${params.outdir}/blastn/"
         mode 'copy'
     }
 }
