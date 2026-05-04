@@ -15,6 +15,6 @@ process VIRALVERIFY {
     """
     set -euo pipefail
 
-    viralverify -f ${fasta} -o viralverify -t ${task.cpus} -thr 7 -p
+    viralverify -f ${fasta} -o viralverify -t ${task.cpus} --thr 7 -p
     """
 }
