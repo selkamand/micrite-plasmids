@@ -9,7 +9,7 @@ process VIRALVERIFY {
     path hmm_database
 
     output:
-    tuple val(meta), path("viralverify/**")
+    tuple val(meta), path("viralverify/viralverify/")
 
     script:
     """
