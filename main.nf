@@ -10,7 +10,7 @@ params {
     bakta_database: Path? = null
 
     // Output directory name
-    outdir: Path = "micrite_plasmid"
+    outdir: String = "micrite_plasmid"
 }
 
 include { PLASMID_SPADES } from './modules/local/plasmidspades.nf'
