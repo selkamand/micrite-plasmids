@@ -26,7 +26,7 @@ include { PLASMID_SPADES } from './modules/local/plasmidspades.nf'
 include { BAKTA } from './modules/local/bakta.nf'
 include { VIRALVERIFY } from './modules/local/viralverify.nf'
 include { MOBSUITE } from './modules/local/mob_suite.nf'
-
+include { BLAST_KNOWN_PLASMIDS } from "./modules/local/blastknownplasmids.nf"
 workflow {
 
     main:
@@ -83,7 +83,7 @@ workflow {
     // Blast plasmid spades output against a database of known plasmid sequences
     ch_blastn = channel.empty()
     if (params.blastn_database != null) {
-        ch_blastn = VIRALVERIFY(ch_plasmidspades.scaffolds, params.blastn_database)
+        ch_blastn = BLAST_KNOWN_PLASMIDS(ch_plasmidspades.scaffolds, params.blastn_database)
     }
 
     publish:
