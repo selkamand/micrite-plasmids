@@ -16,7 +16,8 @@ params {
     viralverify_database: Path? = null
 
     // Path to blastn database of known plasmids 
-    blastn_database: Path? = null
+    blastn_database_dir: Path? = null
+    blastn_database_name: String? = null
 
     // Output directory name
     outdir: String = "micrite_plasmid"
@@ -81,9 +82,13 @@ workflow {
     }
 
     // Blast plasmid spades output against a database of known plasmid sequences
+    if ((params.blastn_database_name != null & params.blastn_database_dir == null) | (params.blastn_database_name != null & params.blastn_database_dir == null)) {
+        error("Please supply both blastn_database_name AND blastn_database_dir")
+    }
+
     ch_blastn = channel.empty()
-    if (params.blastn_database != null) {
-        ch_blastn = BLAST_KNOWN_PLASMIDS(ch_plasmidspades.scaffolds, params.blastn_database)
+    if (params.blastn_database_dir != null) {
+        ch_blastn = BLAST_KNOWN_PLASMIDS(ch_plasmidspades.scaffolds, [params.blastn_database_dir, params.blastn_database_name])
     }
 
     publish:

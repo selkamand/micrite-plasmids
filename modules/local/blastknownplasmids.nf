@@ -8,7 +8,7 @@ process BLAST_KNOWN_PLASMIDS {
 
     input:
     tuple val(meta), path(fasta)
-    path database
+    tuple path(database_dir), val(database_name)
 
     output:
     tuple val(meta), path("${meta.id}.blastn.tsv")
@@ -17,7 +17,7 @@ process BLAST_KNOWN_PLASMIDS {
     """
     set -euo pipefail
     
-    blastn -db ${database} \
+    blastn -db ${database_dir}/${database_name} \
     -evalue 1e-10 \
     -max_target_seqs 20 \
     -outfmt '7 std staxid qcovs qcovhsp stitle' \
