@@ -9,13 +9,13 @@ process MOBSUITE {
     path database
 
     output:
-    tuple val(meta), path("mob_typer"), path("mob_recon")
+    tuple val(meta), path("mob_typer.tsv"), path("mob_recon")
 
     script:
     """
     set -euo pipefail
 
     mob_recon -d ${database} --infile  ${fasta} --outdir mob_recon
-    mob_typer -d ${database} -i ${fasta} -o mob_typer
+    mob_typer -d ${database} -i ${fasta} -o mob_typer.tsv
     """
 }
