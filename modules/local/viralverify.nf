@@ -6,7 +6,7 @@ process VIRALVERIFY {
 
     input:
     tuple val(meta), path(fasta)
-    path hmm_db
+    path hmm_database
 
     output:
     tuple val(meta), path("viralverify")
@@ -15,6 +15,6 @@ process VIRALVERIFY {
     """
     set -euo pipefail
 
-    viralverify -f ${fasta} -o viralverify -t ${task.cpus} --thr 7 -p
+    viralverify --hmm ${hmm_database} -f ${fasta} -o viralverify -t ${task.cpus} --thr 7 -p
     """
 }
