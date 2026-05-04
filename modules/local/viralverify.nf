@@ -2,7 +2,7 @@
 
 process VIRALVERIFY {
     tag "${meta.id}"
-    container 'selkamandcci/micrite-sleuth:0.0.2'
+    container 'community.wave.seqera.io/library/viralverify:1.1--3527fad4ef7ee6f4'
 
     input:
     tuple val(meta), path(fasta)
