@@ -54,7 +54,7 @@ workflow {
     ch_bakta = channel.empty()
 
     if (params.bakta_database != null) {
-        ch_bakta = BAKTA(ch_plasmidspades.contigs, params.bakta_database)
+        ch_bakta = BAKTA(ch_plasmidspades.scaffolds, params.bakta_database)
     }
 
     publish:
