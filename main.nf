@@ -7,7 +7,7 @@ params {
     input: Path
 
     // Path to bakta database directory
-    bakta_database: Path
+    bakta_database: Path? = null
 
     // Output directory name
     outdir: Path = "micrite_plasmid"
@@ -50,8 +50,12 @@ workflow {
     ch_plasmidspades = PLASMID_SPADES(ch_samples)
 
 
-    // Annotate Plasmid Assembly
-    ch_bakta = BAKTA(ch_plasmidspades.contigs, params.bakta_database)
+    // Annotate Plasmid Assembly if user supplies bakta database
+    ch_bakta = channel.empty()
+
+    if (params.bakta_database != null) {
+        ch_bakta = BAKTA(ch_plasmidspades.contigs, params.bakta_database)
+    }
 
     publish:
     plasmidspades = ch_plasmidspades.all_results
