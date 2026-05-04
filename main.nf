@@ -9,12 +9,17 @@ params {
     // Path to bakta database directory
     bakta_database: Path? = null
 
+    // Path to viralverify HMM database
+    viralverify_database: Path? = null
+
     // Output directory name
     outdir: String = "micrite_plasmid"
 }
 
 include { PLASMID_SPADES } from './modules/local/plasmidspades.nf'
 include { BAKTA } from './modules/local/bakta.nf'
+include { VIRALVERIFY } from './modules/local/viralverify.nf'
+
 workflow {
 
     main:
@@ -57,9 +62,16 @@ workflow {
         ch_bakta = BAKTA(ch_plasmidspades.scaffolds, params.bakta_database)
     }
 
+    // Classify plasmid spades output with viralverify 
+    ch_viralverify = channel.empty()
+    if (params.viralverify_database != null) {
+        ch_viralverify = VIRALVERIFY(ch_plasmidspades.scaffolds, params.viralverify_database)
+    }
+
     publish:
     plasmidspades = ch_plasmidspades.all_results
     annotations = ch_bakta
+    viralverify = ch_viralverify
 }
 
 output {
@@ -69,6 +81,10 @@ output {
     }
     annotations {
         path "${params.outdir}/bakta/"
+        mode 'copy'
+    }
+    viralverify {
+        path "${params.outdir}/viralverify/"
         mode 'copy'
     }
 }
