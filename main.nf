@@ -5,11 +5,16 @@ nextflow.enable.dsl = 2
 params {
     // Sample sheet (csv) with three named columsn: sample, r1, r2 describing sampleids
     input: Path
+
+    // Path to bakta database directory
+    bakta_database: Path
+
+    // Output directory name
     outdir: Path = "micrite_plasmid"
 }
 
 include { PLASMID_SPADES } from './modules/local/plasmidspades.nf'
-
+include { BAKTA } from './modules/local/bakta.nf'
 workflow {
 
     main:
@@ -44,13 +49,22 @@ workflow {
     // Plasmid Spades
     ch_plasmidspades = PLASMID_SPADES(ch_samples)
 
+
+    // Annotate Plasmid Assembly
+    ch_bakta = BAKTA(ch_plasmidspades.contigs, params.bakta_database)
+
     publish:
     plasmidspades = ch_plasmidspades.all_results
+    annotations = ch_bakta
 }
 
 output {
     plasmidspades {
         path "${params.outdir}/"
+        mode 'copy'
+    }
+    annotations {
+        path "${params.outdir}/bakta/"
         mode 'copy'
     }
 }
